@@ -1,0 +1,7 @@
+
+Notes
+
+To make the success runtime, it is necessary to include the file of keras_applications as a library in the current working environment. 
+Since the deep learning is hightly specialized, the update advanced 
+models have not included the self-consistent runtime environment. 
+Therefore, developers need to adapt to the new industrial convention. 
