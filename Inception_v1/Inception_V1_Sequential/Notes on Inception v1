@@ -1,0 +1,65 @@
+GoogLeNet in Keras
+
+
+It is the commandline-stype sequentual model of GoogLeNet Inception v1. It was originally written in
+Theano. However, it can be used in TensorFlow 2.3 with the code switch. The plain model is used for
+the thorough study on how Google has build the network based on the network depth of AlexNet and the 
+small filter size of NIN(Network In Network). It typically stacks the layers for more the complex 
+expression of the image classification. 
+GoogLeNet paper:
+
+Concerns: 
+
+1.Total size of parameters
+
+It is quite strange that the Inception v1 has The size of total parameters is 13+ million that is far 
+more than the official number of 5+ million. Please see the paper with opening the weblink as follows.
+It is worth mentioning that Francios Chollt has make the GoogLeNet Inception v3 with 23+ million 
+parameters that is much less than the original total parameters.
+
+Parameter Comparison: 
+https://www.cs.colostate.edu/~dwhite54/InceptionNetworkOverview.pdf
+
+2. Thenao and TensorFlow Platforms 
+
+It supports both Theano and TensorFlow. Therefore, it requires the selection of channels_first for 
+both the platforms. 
+
+3. Slection of channels_first
+
+# Open the file of keras.jsopn
+$ ~/.keras/keras.json
+
+# Change "channels_last" to "channels_first" in the third parameter
+
+{
+    "floatx": "float32",
+    "epsilon": 1e-07,
+    "backend": "tensorflow",
+    "image_data_format": "channels_first"
+}
+Running the Demo (googlenet.py)
+To create a GoogLeNet model, call the following from within Python:
+
+Thanks for the guys for the contributions. joelouismarino provided the original script of the model and
+swghosh modified the script of lrn.py based on the original scrip of joelouismarino. Mike modifies it 
+to adatp to TensorFlow 2.3 and Keras 2.4.3
+
+googlenet_weights.h5:
+https://drive.google.com/file/d/0B319laiAPjU3RE1maU9MMlh2dnc/view
+
+
+Going Deeper with Convolutions(GoogLeNet Inception v1)
+https://arxiv.org/pdf/1409.4842.pdf
+
+Rethinking the Inception Architecture for Computer Vision(GoogLeNet Inception v3)
+https://arxiv.org/abs/1512.00567
+
+Network In Network(NIN)
+https://arxiv.org/abs/1312.4400
+
+AlexNet - ImageNet Classification with Deep Convolutional Neural Networks
+https://neurohive.io/en/popular-networks/alexnet-imagenet-classification-with-deep-convolutional-neural-networks/
+"""
+
+

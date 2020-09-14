@@ -1,0 +1,13 @@
+
+googlenet_weights.h5
+
+The file of googlenet weights is not available in both Google and the DNN models
+of Francois Chollet at Github. It is a prerequisite to run the scrip. Please 
+download the following weight with the weblinks as follows.
+
+https://drive.google.com/file/d/0B319laiAPjU3RE1maU9MMlh2dnc/view 
+
+
+
+
+
