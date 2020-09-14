@@ -18,9 +18,9 @@ parameters that is much less than the original total parameters.
 
 Editor: Mike Chen
 
-Make the the necessary changes and modifications to adapt to the environment of TensorFlow 2.3, Keras 
-2.4.3, CUDA Toolkit 11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to 
-replace the deprecated code. 
+Make the necessary changes of both the class definition and the context to adapt to the environment of 
+TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new 
+lines of code to replace the deprecated code. 
 
 Thanks for the guys for the contributions. joelouismarino provided the original script of the model and
 swghosh modified the script of lrn.py based on the original scrip of joelouismarino. Mike modifies it 
