@@ -4,7 +4,7 @@
 Inception V3 model for Keras. Please make the following command in the Linux Terminal and get 
 the related predicted resulr. 
 
-$ python inception_v3_predictg.py
+$ python inception_v3_predict.py
 
 Predicted: [[('n02504458', 'African_elephant', 0.9749893), ('n01871265', 'tusker', 0.016361168),
 ('n02504013', 'Indian_elephant', 0.002354787), ('n03633091', 'ladle', 0.000102942366), ('n04596742', 
