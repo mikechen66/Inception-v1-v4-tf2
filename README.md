@@ -8,12 +8,14 @@ expression of the image classification.
 
 # Environment
 
-Ununtu 18.04 
-TensorFlow 2.3, 
-Keras 2.4.3
-CUDA Toolkit 11.0
-cuDNN 8.0.1
-CUDA 450.57
+## Ununtu 18.04 
+## TensorFlow 2.3, 
+## Keras 2.4.3
+## CUDA Toolkit 11.0
+## cuDNN 8.0.1
+## CUDA 450.57
+
+# Others
 
 Thanks for the all the creators, developers and editors who make the contributions to the widespread 
 application in the image recognition related industries. The classical models work both either the
