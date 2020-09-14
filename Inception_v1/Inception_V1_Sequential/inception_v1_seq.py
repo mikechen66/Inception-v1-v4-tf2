@@ -13,8 +13,8 @@ of the image classification.
 
 It is quite strange that the Inception v1 has The size of total parameters is 13+ million that is far 
 more than the official number of 5+ million. Please see the paper with opening the weblink as follows.
-It is worth mentioning that Francios Chollt has make the GoogLeNet Inception v3 with 23+ million 
-parameters that is much less than the original total parameters.
+It is worth mentioning that Francios Chollet has made the GoogLeNet Inception v3 with the size of 23+ 
+million parameters.
 
 Editor: Mike Chen
 
