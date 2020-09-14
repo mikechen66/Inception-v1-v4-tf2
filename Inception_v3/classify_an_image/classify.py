@@ -1,16 +1,7 @@
-# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");you may not use 
-# this file except in compliance with the License.You may obtain a copy of the 
-# License at the weblink as follows. 
-#
-# weblink: http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed 
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the 
-# specific language governing permissions and limitations under the License.
-# ==============================================================================
+#!/usr/bin/env python
+# coding: utf-8
+
+# classify.py
 
 """
 Simple image classification with Inception.
@@ -23,7 +14,7 @@ predictions along with their probabilities.
 Change the argument of --image_file to any jpg image to compute a classification 
 of that image.
 
-$ python classify_image_update.py --image=inception_example.jpg
+$ python classify.py --image=inception_example.jpg
 
 Please see the tutorial and website for a detailed description of how to use this 
 script to perform image recognition.
