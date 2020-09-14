@@ -243,7 +243,7 @@ if __name__ == "__main__":
     img = np.expand_dims(img, axis=0)
 
     # Test pretrained model
-    weights_path = '/home/mike/Documents/GoogLeNet-Keras-Test/googlenet_weights.h5'
+    weights_path = '/home/mike/Documents/googlenet/googlenet_weights.h5'
     model = build(weights_path)
     sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(optimizer=sgd, loss='categorical_crossentropy')
