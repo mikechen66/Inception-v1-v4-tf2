@@ -1,0 +1,11 @@
+
+DOWNLOAD
+
+Please download the following weights for the latter script running. 
+
+Inception Weights 
+https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+
+Inception Weights with No Top
+https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
+
