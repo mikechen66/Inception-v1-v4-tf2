@@ -1,6 +1,6 @@
 
 
-# incepion_v1func.py
+# incepion_v1_func.py
 
 """
 The script is the function-style sequentual model of GoogLeNet Inception v1. The first-stage model 
