@@ -367,13 +367,6 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
             
     return model
 
-
-def preprocess_input(x):
-    x = np.divide(x, 255.0)
-    x = np.subtract(x, 0.5)
-    x = np.multiply(x, 2.0)
-    return x
-
 """
 if __name__ == '__main__':
 
