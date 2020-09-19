@@ -50,8 +50,7 @@ WEIGHTS_PATH = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering
 WEIGHTS_PATH_NO_TOP = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
 
-def conv2d_bn(x, nb_filter, num_row, num_col, padding='same', 
-              strides=(1, 1), use_bias=False):
+def conv2d_bn(x, nb_filter, num_row, num_col, padding='same', strides=(1, 1), use_bias=False):
 
     # Utility function to apply conv + BN. 
     if K.image_data_format() == 'channels_last':
@@ -90,7 +89,7 @@ def block_inception_a(input):
     branch_3 = AveragePooling2D((3,3), strides=(1,1), padding='same')(input)
     branch_3 = conv2d_bn(branch_3, 96, 1, 1)
 
-    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
+    x = concatenate([branch_0,branch_1,branch_2,branch_3], axis=channel_axis)
     
     return x
 
@@ -110,7 +109,7 @@ def block_reduction_a(input):
 
     branch_2 = MaxPooling2D((3,3), strides=(2,2), padding='valid')(input)
 
-    x = concatenate([branch_0, branch_1, branch_2], axis=channel_axis)
+    x = concatenate([branch_0,branch_1,branch_2], axis=channel_axis)
 
     return x
 
@@ -137,7 +136,7 @@ def block_inception_b(input):
     branch_3 = AveragePooling2D((3,3), strides=(1,1), padding='same')(input)
     branch_3 = conv2d_bn(branch_3, 128, 1, 1)
 
-    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
+    x = concatenate([branch_0,branch_1,branch_2,branch_3], axis=channel_axis)
 
     return x
 
@@ -150,16 +149,16 @@ def block_reduction_b(input):
         channel_axis = 1
 
     branch_0 = conv2d_bn(input, 192, 1, 1)
-    branch_0 = conv2d_bn(branch_0, 192, 3, 3, strides=(2, 2), padding='valid')
+    branch_0 = conv2d_bn(branch_0, 192, 3, 3, strides=(2,2), padding='valid')
 
     branch_1 = conv2d_bn(input, 256, 1, 1)
     branch_1 = conv2d_bn(branch_1, 256, 1, 7)
     branch_1 = conv2d_bn(branch_1, 320, 7, 1)
     branch_1 = conv2d_bn(branch_1, 320, 3, 3, strides=(2,2), padding='valid')
 
-    branch_2 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(input)
+    branch_2 = MaxPooling2D((3,3), strides=(2,2), padding='valid')(input)
 
-    x = concatenate([branch_0, branch_1, branch_2], axis=channel_axis)
+    x = concatenate([branch_0,branch_1,branch_2], axis=channel_axis)
 
     return x
 
@@ -176,7 +175,7 @@ def block_inception_c(input):
     branch_1 = conv2d_bn(input, 384, 1, 1)
     branch_10 = conv2d_bn(branch_1, 256, 1, 3)
     branch_11 = conv2d_bn(branch_1, 256, 3, 1)
-    branch_1 = concatenate([branch_10, branch_11], axis=channel_axis)
+    branch_1 = concatenate([branch_10,branch_11], axis=channel_axis)
 
 
     branch_2 = conv2d_bn(input, 384, 1, 1)
@@ -184,12 +183,12 @@ def block_inception_c(input):
     branch_2 = conv2d_bn(branch_2, 512, 1, 3)
     branch_20 = conv2d_bn(branch_2, 256, 1, 3)
     branch_21 = conv2d_bn(branch_2, 256, 3, 1)
-    branch_2 = concatenate([branch_20, branch_21], axis=channel_axis)
+    branch_2 = concatenate([branch_20,branch_21], axis=channel_axis)
 
-    branch_3 = AveragePooling2D((3, 3), strides=(1, 1), padding='same')(input)
+    branch_3 = AveragePooling2D((3,3), strides=(1,1), padding='same')(input)
     branch_3 = conv2d_bn(branch_3, 256, 1, 1)
 
-    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
+    x = concatenate([branch_0,branch_1,branch_2,branch_3], axis=channel_axis)
 
     return x
 
@@ -201,7 +200,7 @@ def inception_v4_base(input):
     else:
         channel_axis = 1
 
-    # Input Shape is 299 x 299 x 3 (th) or 3 x 299 x 299 (th)
+    # Input Shape is 299 x 299 x 3 (tf) or 3 x 299 x 299 (th)
     net = conv2d_bn(input, 32, 3, 3, strides=(2,2), padding='valid')
     net = conv2d_bn(net, 32, 3, 3, padding='valid')
     net = conv2d_bn(net, 64, 3, 3)
@@ -220,12 +219,12 @@ def inception_v4_base(input):
     branch_1 = conv2d_bn(branch_1, 64, 7, 1)
     branch_1 = conv2d_bn(branch_1, 96, 3, 3, padding='valid')
 
-    net = concatenate([branch_0, branch_1], axis=channel_axis)
+    net = concatenate([branch_0,branch_1], axis=channel_axis)
 
     branch_0 = conv2d_bn(net, 192, 3, 3, strides=(2,2), padding='valid')
     branch_1 = MaxPooling2D((3,3), strides=(2,2), padding='valid')(net)
 
-    net = concatenate([branch_0, branch_1], axis=channel_axis)
+    net = concatenate([branch_0,branch_1], axis=channel_axis)
 
     # 35 x 35 x 384
     # 4 x Inception-A blocks
@@ -292,7 +291,7 @@ def inception_v4(num_classes, dropout_prob, weights, include_top):
                 warnings.warn('You are using the TensorFlow backend'
                               'with image data format convention '
                               '(`image_data_format="channels_last"`).'
-                              'If you have a problem, please check the '
+                              'If you meet a problem, please check the '
                               'Keras config at ~/.keras/keras.json.')
         if include_top:
             weights_path = WEIGHTS_PATH
