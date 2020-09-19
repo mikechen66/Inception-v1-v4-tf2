@@ -36,7 +36,6 @@ from keras.layers.merge import concatenate
 from keras.regularizers import l2
 
 
-
 def googlenet(input_shape, num_classes):
 
     input = Input(shape=input_shape)
