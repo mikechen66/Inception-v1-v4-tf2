@@ -8,7 +8,8 @@ The script is the function-style model of GoogLeNet Inception v2. The second-sta
 for the thorough study on how Google has built the network based with BatchNorm on the network 
 depth of AlexNet and the small filter size of NIN(Network In Network). It stacks the layers to 
 address the complexity of the image classification. Please use the following command to run the 
-script. 
+script. It is much easier to understand than the slim model of Inception v2 in the official 
+TensorFlow models. The slim model includes too much syntactic sugar. 
 
 # $ python inception_v2_func.py
 
@@ -97,16 +98,16 @@ def inception(input, filters_1x1_l11, filters_3x3_reduce_l12, filters_3x3_l21, f
     conv_3x3_reduce_l12 = Conv2D(filters=filters_3x3_reduce_l12, kernel_size=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(input)
     BatchNorm_i2 = BatchNormalization()(conv_3x3_reduce_l12)
     # Layer2-->No.1: Conv 64 3x3 + 1(s), conv_3x3_reduce is the cell of Inception Layer 2
-    conv_3x3_l21 = Conv2D(filters=filters_3x3_l21, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(conv_3x3_reduce_l12)
+    conv_3x3_l21 = Conv2D(filters=filters_3x3_l21, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(BatchNorm_i2)
     BatchNorm_i3 = BatchNormalization()(conv_3x3_l21)
     # Layer1-->No.3: Conv 64 1x1 1(s), conv_3x3_reduce_l13 is the cell of Inception Layer 1
     conv_3x3_reduce_l13 = Conv2D(filters=filters_3x3_reduce_l13, kernel_size=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(input)
     BatchNorm_i4 = BatchNormalization()(conv_3x3_reduce_l13)
     # Layer2-->No.2: Conv 96 3x3 1(s)
-    conv_3x3_l22 = Conv2D(filters=filters_3x3_l22, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(conv_3x3_reduce_l13)
+    conv_3x3_l22 = Conv2D(filters=filters_3x3_l22, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(BatchNorm_i4)
     BatchNorm_i5 = BatchNormalization()(conv_3x3_l22)
     # Layer3-->No.1: Conv 96 3x3 1(s): The Layer 3 has only one cell 
-    conv_3x3_l31 = Conv2D(filters=filters_3x3_l31, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(conv_3x3_l22)
+    conv_3x3_l31 = Conv2D(filters=filters_3x3_l31, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(BatchNorm_i5)
     BatchNorm_i6 = BatchNormalization()(conv_3x3_l31)
     # Layer1-->No.4: AvgPool 3x3 1(s)
     avgpool_14 = AveragePooling2D(pool_size=(3,3), strides=(1,1), padding='same')(input)
