@@ -92,28 +92,32 @@ def inception(input, filters_1x1_l11, filters_3x3_reduce_l12, filters_3x3_l21, f
     # Layer1-->No.1: Conv 64 1x1 + 1(s)
     conv_1x1_l11 = Conv2D(filters=filters_1x1_l11, kernel_size=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(input)
     bn11 = BatchNormalization()(conv_1x1_l11)
+    
     # Layer1-->No.2: Conv 64 1x1 +１(s), be connected to conv_3x3_l21 (Layer2-->No.1)
     conv_3x3_reduce_l12 = Conv2D(filters=filters_3x3_reduce_l12, kernel_size=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(input)
     bn12 = BatchNormalization()(conv_3x3_reduce_l12)
-    # Layer2-->No.1: Conv 64 3x3 + 1(s), conv_3x3_reduce is the cell of Inception Layer 2
-    conv_3x3_l21 = Conv2D(filters=filters_3x3_l21, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn12)
-    bn21 = BatchNormalization()(conv_3x3_l21)
+    
+    # Layer2-->No.2: Conv 64 3x3 + 1(s), conv_3x3_reduce is the cell of Inception Layer 2
+    conv_3x3_l22 = Conv2D(filters=filters_3x3_l21, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn12)
+    bn22 = BatchNormalization()(conv_3x3_l22)
+    
     # Layer1-->No.3: Conv 64 1x1 1(s), conv_3x3_reduce_l13 is the cell of Inception Layer 1
     conv_3x3_reduce_l13 = Conv2D(filters=filters_3x3_reduce_l13, kernel_size=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(input)
     bn13 = BatchNormalization()(conv_3x3_reduce_l13)
-    # Layer2-->No.2: Conv 96 3x3 1(s)
-    conv_3x3_l22 = Conv2D(filters=filters_3x3_l22, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn13)
-    bn22 = BatchNormalization()(conv_3x3_l22)
-    # Layer3-->No.1: Conv 96 3x3 1(s): The Layer 3 has only one cell 
-    conv_3x3_l31 = Conv2D(filters=filters_3x3_l31, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn22)
-    bn31 = BatchNormalization()(conv_3x3_l31)
+    # Layer2-->No.3: Conv 96 3x3 1(s)
+    conv_3x3_l23 = Conv2D(filters=filters_3x3_l23, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn13)
+    bn23 = BatchNormalization()(conv_3x3_l23)
+    # Layer3-->No.3: Conv 96 3x3 1(s): The Layer 3 has only one cell 
+    conv_3x3_l33 = Conv2D(filters=filters_3x3_l33, kernel_size=(3,3), padding='same', activation='relu', kernel_regularizer=l2(0.01))(bn23)
+    bn33 = BatchNormalization()(conv_3x3_l33)
+    
     # Layer1-->No.4: AvgPool 3x3 1(s)
     avgpool_14 = AveragePooling2D(pool_size=(3,3), strides=(1,1), padding='same')(input)
-    # Layer2-->No.3
-    avgpool_23_proj = Conv2D(filters=filters_pool_proj, kernel_size=(1,1), strides=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(avgpool_14)
-    bn23 = BatchNormalization()(avgpool_23_proj)
+    # Layer2-->No.4
+    avgpool_24_proj = Conv2D(filters=filters_pool_proj, kernel_size=(1,1), strides=(1,1), padding='same', activation='relu', kernel_regularizer=l2(0.01))(avgpool_14)
+    bn24 = BatchNormalization()(avgpool_24_proj)
 
-    inception_output = concatenate([bn11,bn21,bn31,bn23], axis=3)
+    inception_output = concatenate([bn11,bn22,bn33,bn24], axis=3)
 
     return inception_output
 
