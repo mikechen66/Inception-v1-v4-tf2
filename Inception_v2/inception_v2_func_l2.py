@@ -10,7 +10,7 @@ with BatchNorm on the network depth of AlexNet and the small filter size of NIN(
 Network). It stacks the layers to address the complexity of the image classification. Please 
 use the following command to run the script. 
 
-# $ python inception_v2_func_ls.py
+# $ python inception_v2_func_l2.py
 
 It is quite strange it is hard to get the code of Inception v2 in either Google Search or Github. 
 Futhermotre, most of the available Inception v2 has more than total size of 20+ million (or even 
@@ -59,14 +59,17 @@ def googlenet(input_shape, num_classes):
 
     input = Input(shape=input_shape)
 
-    x = Conv2D(filters=64, kernel_size=(7,7), strides=(2,2), padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(input)       
+    x = Conv2D(filters=64, kernel_size=(7,7), strides=(2,2), padding='same', activation='relu', 
+               kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(input)       
     x = BatchNormalization(momentum=0.9, epsilon=1e-5)(x)
     x = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(x)
     
-    x = Conv2D(filters=64, kernel_size=(1,1), strides=(1,1), padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    x = Conv2D(filters=64, kernel_size=(1,1), strides=(1,1), padding='same', activation='relu', 
+               kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     x = BatchNormalization(momentum=0.9, epsilon=1e-5)(x)
     
-    x = Conv2D(filters=192, kernel_size=(3,3), strides=(1,1), padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    x = Conv2D(filters=192, kernel_size=(3,3), strides=(1,1), padding='same', activation='relu', 
+               kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     x = BatchNormalization(momentum=0.9, epsilon=1e-5)(x)  
     x = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(x)
     
@@ -88,7 +91,8 @@ def googlenet(input_shape, num_classes):
     # Add the average pooling 
     x = AveragePooling2D(pool_size=(7,7), strides=(7,7), padding='same')(x)
     x = Dropout(rate=0.4)(x)
-    linear = Dense(num_classes, activation='softmax', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    linear = Dense(num_classes, activation='softmax', kernel_initializer="he_normal", 
+                   kernel_regularizer=l2(1e-4))(x)
 
     model = Model(inputs=input, outputs=linear)          
 
@@ -101,24 +105,31 @@ def inception(x, params, axis):
     # Bind the vertical cells tegother for an elegant realization
     [branch1, branch2, branch3, branch4] = params
 
-    conv11 = Conv2D(filters=branch1[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    conv11 = Conv2D(filters=branch1[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     bn11 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv11)
 
-    conv12 = Conv2D(filters=branch2[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    conv12 = Conv2D(filters=branch2[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     bn12 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv12)
     
-    conv22 = Conv2D(filters=branch2[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn12)
+    conv22 = Conv2D(filters=branch2[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn12)
     bn22 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv22)
 
-    conv13 = Conv2D(filters=branch3[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
+    conv13 = Conv2D(filters=branch3[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     bn13 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv13)
-    conv23 = Conv2D(filters=branch3[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn13)
+    conv23 = Conv2D(filters=branch3[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn13)
     bn23 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv23)
-    conv33 = Conv2D(filters=branch3[2], kernel_size=(3,3), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn23)
+    conv33 = Conv2D(filters=branch3[2], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn23)
     bn33 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv33)
 
     mp14 = MaxPooling2D(pool_size=(3,3), strides=1, padding='same')(x)
-    conv24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(mp14)
+    conv24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+                    kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(mp14)
     bn24 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv24)
 
     inception_output = concatenate([bn11,bn22,bn33,bn24], axis=3)
