@@ -9,7 +9,7 @@ expression of the image classification.
 # Environment
 
 ## Ununtu 18.04 
-## TensorFlow 2.3, 
+## TensorFlow 2.2 
 ## Keras 2.4.3
 ## CUDA Toolkit 11.0
 ## cuDNN 8.0.1
