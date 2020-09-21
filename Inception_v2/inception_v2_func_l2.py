@@ -106,6 +106,7 @@ def inception(x, params, axis):
 
     conv12 = Conv2D(filters=branch2[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
     bn12 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv12)
+    
     conv22 = Conv2D(filters=branch2[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn12)
     bn22 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv22)
 
