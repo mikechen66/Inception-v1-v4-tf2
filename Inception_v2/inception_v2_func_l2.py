@@ -117,7 +117,6 @@ def inception(x, params, axis):
     bn33 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv33)
 
     mp14 = MaxPooling2D(pool_size=(3,3), strides=1, padding='same')(x)
-        
     conv24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(mp14)
     bn24 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv24)
 
