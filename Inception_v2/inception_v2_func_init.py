@@ -86,10 +86,10 @@ def googlenet(input_shape, num_classes):
     x = inception(x, params=[(352,),(192,320),(160,224,224),(128,)]) 
     x = inception(x, params=[(352,),(192,320),(192,224,224),(128,)]) 
     x = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(x)
-
-    # Add the average pooling 
     x = AveragePooling2D(pool_size=(7,7), strides=(7,7), padding='same')(x)
+    
     x = Dropout(rate=0.4)(x)
+
     linear = Dense(num_classes, activation='softmax', kernel_initializer="he_normal", 
     	           kernel_regularizer=l2(1e-4))(x)
 
@@ -104,33 +104,34 @@ def inception(x, params):
     # Bind the vertical cells tegother for an elegant realization
     [branch1, branch2, branch3, branch4] = params
 
-    conv11 = Conv2D(filters=branch1[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+    conv_11 = Conv2D(filters=branch1[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
     	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
-    bn11 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv11)
+    bn_11 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_11)
 
-    conv12 = Conv2D(filters=branch2[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+    conv_12 = Conv2D(filters=branch2[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
     	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
-    bn12 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv12)
-    conv22 = Conv2D(filters=branch2[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
-    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn12)
-    bn22 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv22)
+    bn_12 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_12)
+    conv_22 = Conv2D(filters=branch2[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn_12)
+    bn_22 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_22)
 
-    conv13 = Conv2D(filters=branch3[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+    conv_13 = Conv2D(filters=branch3[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
     	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(x)
-    bn13 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv13)
-    conv23 = Conv2D(filters=branch3[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
-    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn13)
-    bn23 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv23)
-    conv33 = Conv2D(filters=branch3[2], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
-    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn23)
-    bn33 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv33)
+    bn_13 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_13)
+    conv_23 = Conv2D(filters=branch3[1], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn_13)
+    bn_23 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_23)
+    conv_33 = Conv2D(filters=branch3[2], kernel_size=(3,3), strides=1, padding='same', activation='relu', 
+    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(bn_23)
+    bn_33 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_33)
+    
+    mp_14 = MaxPooling2D(pool_size=(3,3), strides=1, padding='same')(x)
+    conv_24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
+    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(mp_14)
+    bn_24 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv_24)
 
-    mp14 = MaxPooling2D(pool_size=(3,3), strides=1, padding='same')(x)
-    conv24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=1, padding='same', activation='relu', 
-    	            kernel_initializer="he_normal", kernel_regularizer=l2(1e-4))(mp14)
-    bn24 = BatchNormalization(momentum=0.9, epsilon=1e-5)(conv24)
-
-    inception_output = concatenate([bn11,bn22,bn33,bn24], axis=3)
+    # inception_output = concatenate([bn11,bn21,bn31,bn23], axis=3)
+    inception_output = concatenate([bn_11,bn_22,bn_33,bn_24], axis=3)
 
     return inception_output
 
