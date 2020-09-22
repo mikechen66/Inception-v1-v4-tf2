@@ -20,7 +20,6 @@ Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Ke
 code. 
 
 Francios Chollet -- inception_v3.py 
-Kent Sommer -- Inception_v4.py
 
 Note that the input image format for this model is different than for the VGG16 and ResNet models 
 (299x299 instead of 224x224), and that the input preprocessing function is also different (same as 
