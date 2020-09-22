@@ -15,8 +15,8 @@ https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
 11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to replace the deprecated 
 code. 
+
 Francios Chollet - inception_v3.py 
-Kent Sommers - inception_v4.py
 Note that the input image format for this model is different than for the VGG16 and ResNet models 
 (299x299 instead of 224x224), and that the input preprocessing function is also different (same as 
 Xception).
