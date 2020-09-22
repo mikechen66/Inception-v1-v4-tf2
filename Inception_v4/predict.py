@@ -19,7 +19,7 @@ import numpy as np
 from keras.preprocessing import image
 # -from keras.applications.imagenet_utils import decode_predictions
 from keras.preprocessing import image
-from inception_v4_matrix import inception_v4
+from inception_v4_func import inception_v4
 
 
 # Set up the GPU to avoid the runtime error: Could not create cuDNN handle...
