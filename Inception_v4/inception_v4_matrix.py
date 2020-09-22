@@ -214,17 +214,14 @@ def inception_v4_base(input):
 
     branch_13 = conv2d_bn(basenet, filters=64, kernel_size=(1,1), strides=(1,1))
     branch_14 = conv2d_bn(branch_13, filters=96, kernel_size=(3,3), strides=(1,1), padding='valid')
-
     branch_15 = conv2d_bn(basenet, filters=64, kernel_size=(1,1), strides=(1,1))
     branch_16 = conv2d_bn(branch_15, filters=64, kernel_size=(1,7), strides=(1,1))
     branch_17 = conv2d_bn(branch_16, filters=64, kernel_size=(7,1), strides=(1,1))
     branch_18 = conv2d_bn(branch_17, filters=96, kernel_size=(3,3),  strides=(1,1), padding='valid')
-
     basenet = concatenate([branch_14,branch_18], axis=bn_axis)
 
     branch_19 = conv2d_bn(basenet, filters=192, kernel_size=(3,3), strides=(2,2), padding='valid')
     branch_20 = MaxPooling2D((3,3), strides=(2,2), padding='valid')(basenet)
-
     basenet = concatenate([branch_19,branch_20], axis=bn_axis)
   
     # 4 x Inception-A blocks: 35 x 35 x 384
