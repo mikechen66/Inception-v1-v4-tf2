@@ -28,11 +28,6 @@ for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
 
-img_path = '/home/mike/Documents/keras_inception_v4/elephant.jpg'
-img = image.load_img(img_path, target_size=(299,299))
-x = image.img_to_array(img)
-
-
 def preprocess_input(x):
     
     x = image.img_to_array(img)
@@ -52,7 +47,6 @@ if __name__ == '__main__':
     include_top = True 
 
     model = inception_v4(num_classes, dropout_prob, weights, include_top)
-
     model.summary()
 
     img_path = '/home/mike/Documents/keras_inception_v4/elephant.jpg'
