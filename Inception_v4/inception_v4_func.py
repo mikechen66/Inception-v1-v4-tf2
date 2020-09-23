@@ -69,17 +69,6 @@ def conv2d_bn(x, filters, kernel_size, strides, padding='same', use_bias=False):
     return x
 
 
-# Define the joint function to apply conv + BN. 
-def conv2d_bn(x, filters, kernel_size, strides, padding='same', use_bias=False):
-
-    x = Conv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=use_bias,
-               kernel_initializer="he_normal", kernel_regularizer=l2(0.00004))(x)
-    x = BatchNormalization(axis=3, momentum=0.9997, scale=False)(x)
-    x = Activation('relu')(x)
-
-    return x
-
-
 def block_inception_a(input):
 
     branch_11 = conv2d_bn(input, filters=96, kernel_size=(1,1), strides=(1,1))
