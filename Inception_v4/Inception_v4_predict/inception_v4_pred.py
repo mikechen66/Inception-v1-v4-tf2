@@ -250,7 +250,7 @@ def inception_v4(input_shape, num_classes, weights, include_top):
 
 def preprocess_input(x):
 
-    x = image.img_to_array(img)
+    x = image.img_to_array(x)
     x = np.expand_dims(x, axis=0)
     x = np.divide(x, 255.0)
     x = np.subtract(x, 0.5)
