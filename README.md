@@ -1,4 +1,4 @@
-# Inception_v1_v4
+# Inception-v1-v4
 
 It is an attempt to have the new interpretation of the classical Inception v1~v4 models in the new
 environment. The new interpreted models are used for the thorough study on how the outstanding 
