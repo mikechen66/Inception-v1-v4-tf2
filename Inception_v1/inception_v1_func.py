@@ -45,7 +45,7 @@ def googlenet(input_shape, num_classes):
                        kernel_regularizer=l2(0.01))(input)
     maxpool1_3x3 = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(conv1_7x7)
     conv2_1x1 = Conv2D(filters=64, kernel_size=(1,1),  strides=(1,1), padding='same', activation='relu', 
-                              kernel_regularizer=l2(0.01))(maxpool1_3x3)
+                       kernel_regularizer=l2(0.01))(maxpool1_3x3)
     conv2_3x3 = Conv2D(filters=192, kernel_size=(3,3), strides=(1,1), padding='same', activation='relu', 
                        kernel_regularizer=l2(0.01))(conv2_1x1)
     maxpool2_3x3 = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(conv2_3x3)
