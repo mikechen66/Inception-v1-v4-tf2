@@ -202,7 +202,8 @@ def inception_v4(input_shape, num_classes, weights, include_top):
     Return: 
         logits: the logit outputs of the model.
     '''
-    # shape is defined as a 4-D tensor while Input(a keras class) is adopted. 
+    # Input() initizate a 3-D shape(weight,height,channels) into a 4-D tensor(batch, weight, 
+    # height, channels). If no batch size, it is defaulted as None.
     inputs = Input(shape=input_shape)
 
     # Call the function of inception_stem()
