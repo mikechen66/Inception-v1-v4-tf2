@@ -6,10 +6,13 @@
 """
 Inception V4 model for Keras. 
 
-If the files of nception_v4_weights are hard to download during the runtime due to the hindrince 
+If the files of Inception_v4_weights are hard to download during the runtime due to the hindrince 
 of network connectivity, users can directly download then and then and then run the script. 
 
 $ python inception_v4_pred.py
+
+If users want to run the model, please run the script of Inceptin_v4_func.py. Since it is abstract, 
+we do not set the argument of the weights that need to be downloaded from designated weblink. 
 
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
 11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to replace the deprecated 
@@ -28,6 +31,7 @@ import numpy as np
 import tensorflow as tf
 import warnings
 
+# from keras.layers.convolutional import MaxPooling2D, Conv2D, AveragePooling2D
 from keras.layers import Input, Dropout, Dense, Flatten, Activation, MaxPooling2D, Conv2D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers.merge import concatenate
@@ -49,65 +53,9 @@ for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
 
-# Assume users have already downloaded the Inception v4 weights 
+# Assume users have already download the Inception v4 weights 
 WEIGHTS_PATH = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
 WEIGHTS_PATH_NO_TOP = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
-
-
-def inception_v4(input_shape, num_classes, weights, include_top):
-    # Build the abstract Inception v4 network
-    '''
-    Args:
-        input_shape: three dimensions in the TensorFlow Data Format
-        num_classes: number of classes
-        weights: pre-defined Inception v4 weights 
-        include_top: a boolean, for full traning or finetune 
-    Return: 
-        logits: the logit outputs of the model.
-    '''
-    inputs = Input(shape=input_shape)
-
-    # Make the the stem of Inception v4 
-    x = inception_stem(inputs)
-
-    # 4 x Inception-A blocks: 35 x 35 x 384
-    for i in range(0, 4):
-        x = inception_a(x)
-
-    # Reduction-A block: # 35 x 35 x 384
-    x = reduction_a(x)
-
-    # 7 x Inception-B blocks: 17 x 17 x 1024
-    for i in range(0, 7):
-        x = inception_b(x)
-
-    # Reduction-B block: 17 x 17 x 1024
-    x = reduction_b(x)
-
-    # 3 x Inception-C blocks: 8 x 8 x 1536
-    for i in range(0, 3):
-        x = inception_c(x)
-
-    # Final pooling and prediction
-    if include_top:
-        # 1 x 1 x 1536
-        x = AveragePooling2D((8,8), padding='valid')(x)
-        x = Dropout(0.5)(x)
-        x = Flatten()(x)
-        x = Dense(units=num_classes, activation='softmax')(x)
-
-    model = Model(inputs, x, name='inception_v4')
-
-    # load weights
-    if weights == 'imagenet':
-        if include_top:
-            weights_path = WEIGHTS_PATH
-        else:
-            weights_path = WEIGHTS_PATH_NO_TOP
-        # -model.load_weights(weights_path, by_name=True)
-        model.load_weights(weights_path)
-
-    return model
 
 
 def conv_bn(x, filters, kernel_size, strides, padding='same', use_bias=False):
@@ -253,6 +201,62 @@ def preprocess_input(x):
     return output
 
 
+def inception_v4(input_shape, num_classes, weights, include_top):
+    # Build the abstract Inception v4 network
+    '''
+    Args:
+        input_shape: three dimensions in the TensorFlow Data Format
+        num_classes: number of classes
+        weights: pre-defined Inception v4 weights 
+        include_top: a boolean, for full traning or finetune 
+    Return: 
+        logits: the logit outputs of the model.
+    '''
+    inputs = Input(shape=input_shape)
+
+    # Make the the stem of Inception v4 
+    x = inception_stem(inputs)
+
+    # 4 x Inception-A blocks: 35 x 35 x 384
+    for i in range(0, 4):
+        x = inception_a(x)
+
+    # Reduction-A block: # 35 x 35 x 384
+    x = reduction_a(x)
+
+    # 7 x Inception-B blocks: 17 x 17 x 1024
+    for i in range(0, 7):
+        x = inception_b(x)
+
+    # Reduction-B block: 17 x 17 x 1024
+    x = reduction_b(x)
+
+    # 3 x Inception-C blocks: 8 x 8 x 1536
+    for i in range(0, 3):
+        x = inception_c(x)
+
+    # Final pooling and prediction
+    if include_top:
+        # 1 x 1 x 1536
+        x = AveragePooling2D((8,8), padding='valid')(x)
+        x = Dropout(0.5)(x)
+        x = Flatten()(x)
+        x = Dense(units=num_classes, activation='softmax')(x)
+
+    model = Model(inputs, x, name='inception_v4')
+
+    # load weights
+    if weights == 'imagenet':
+        if include_top:
+            weights_path = WEIGHTS_PATH
+        else:
+            weights_path = WEIGHTS_PATH_NO_TOP
+        # -model.load_weights(weights_path, by_name=True)
+        model.load_weights(weights_path)
+
+    return model
+
+
 if __name__ == '__main__':
 
     input_shape = (299,299,3)
@@ -274,6 +278,6 @@ if __name__ == '__main__':
     # Run the prediction on the given image
     preds = model.predict(output)
 
-    # Print the predicted result 
+    # Pring the predicted result 
     print("Class is: " + classes[np.argmax(preds)-1])
     print("Certainty is: " + str(preds[0][np.argmax(preds)]))
