@@ -190,17 +190,6 @@ def inception_c(input):
     return x
 
 
-def preprocess_input(x):
-
-    x = image.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = np.divide(x, 255.0)
-    x = np.subtract(x, 0.5)
-    output = np.multiply(x, 2.0)
-
-    return output
-
-
 def inception_v4(input_shape, num_classes, weights, include_top):
     # Build the abstract Inception v4 network
     '''
@@ -255,6 +244,17 @@ def inception_v4(input_shape, num_classes, weights, include_top):
         model.load_weights(weights_path)
 
     return model
+
+
+def preprocess_input(x):
+
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = np.divide(x, 255.0)
+    x = np.subtract(x, 0.5)
+    output = np.multiply(x, 2.0)
+
+    return output
 
 
 if __name__ == '__main__':
