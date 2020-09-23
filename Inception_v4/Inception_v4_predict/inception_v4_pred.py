@@ -11,8 +11,9 @@ of network connectivity, users can directly download then and then and then run 
 
 $ python inception_v4_pred.py
 
-If users want to run the model, please run the script of Inceptin_v4_func.py. Since it is abstract, 
-we do not set the argument of the weights that need to be downloaded from designated weblink. 
+Please pay more attention on the formal argument "x". To faciliate the process of parameter passing
+during the function calls in the context, we select x to express the recursion that is the typical
+mathematical usage. 
 
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
 11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to replace the deprecated 
@@ -201,9 +202,10 @@ def inception_v4(input_shape, num_classes, weights, include_top):
     Return: 
         logits: the logit outputs of the model.
     '''
+    # shape is defined as a 4-D tensor while Input(a keras class) is adopted. 
     inputs = Input(shape=input_shape)
 
-    # Make the the stem of Inception v4 
+    # Call the function of inception_stem()
     x = inception_stem(inputs)
 
     # 4 x Inception-A blocks: 35 x 35 x 384
