@@ -95,7 +95,7 @@ def inception(input, axis, params):
     maxpool_proj_24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=(1,1), padding='same', 
                              activation='relu', kernel_regularizer=l2(0.01))(maxpool_14)
 
-    inception_output = concatenate([conv_11, conv_22, conv_23, maxpool_proj_24], axis=3)  # use tf as backend
+    inception_output = concatenate([conv_11, conv_22, conv_23, maxpool_proj_24], axis=3)  
 
     return inception_output
 
