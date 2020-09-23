@@ -8,10 +8,9 @@ Inception v4 model for Keras. It is the pure model of Inception v4. Since the In
 basically build the model on the linear algebra, incuding matrix components for inception_a, b,c
 and reduction_a, b. With regard to inception_stem, it is just addition computation. So the model
 is quite simple in the essence of linear algebra. The difficutly beghind the algebra is mainly 
-the concept complxity. Please remember  even the linear algebra includes huge gradients computing. 
+the concept complxity. Please remember even the linear algebra includes huge gradients computing. 
 
-
-If users want to run the model,please run the script of Inceptin_v4_func.py. Since it is abstract, 
+If users want to run the model, please run the script of Inceptin_v4_func.py. Since it is abstract, 
 we do not set the argument of the weights that need to be downloaded from designated weblink. 
 
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
@@ -50,52 +49,6 @@ from keras.preprocessing import image
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
-
-
-def inception_v4(input_shape, num_classes, include_top):
-    # Build the abstract Inception v4 network
-    '''
-    Args:
-        input_shape: three dimensions in the TensorFlow Data Format
-        num_classes: number of classes
-        include_top: a boolean value, for full traning or finetune 
-    Return: 
-        logits: the logit outputs of the model.
-    '''
-    inputs = Input(shape=input_shape)
-
-    # Make the the stem of Inception v4 
-    x = inception_stem(inputs)
-
-    # 4 x Inception-A blocks: 35 x 35 x 384
-    for i in range(0, 4):
-        x = inception_a(x)
-
-    # Reduction-A block: # 35 x 35 x 384
-    x = reduction_a(x)
-
-    # 7 x Inception-B blocks: 17 x 17 x 1024
-    for i in range(0, 7):
-        x = inception_b(x)
-
-    # Reduction-B block: 17 x 17 x 1024
-    x = reduction_b(x)
-
-    # 3 x Inception-C blocks: 8 x 8 x 1536
-    for i in range(0, 3):
-        x = inception_c(x)
-
-    # Final pooling and prediction
-    if include_top:
-        # 1 x 1 x 1536
-        x = AveragePooling2D((8,8), padding='valid')(x)
-        x = Dropout(0.5)(x)
-        x = Flatten()(x)
-        x = Dense(units=num_classes, activation='softmax')(x)
-
-    model = Model(inputs, x, name='inception_v4')
-
-    return model
 
 
 def conv_bn(x, filters, kernel_size, strides, padding='same', use_bias=False):
@@ -231,3 +184,50 @@ def inception_c(input):
     x = concatenate([branch_11,branch_33,branch_55,branch_26], axis=3)
 
     return x
+
+
+def inception_v4(input_shape, num_classes, include_top):
+    # Build the abstract Inception v4 network
+    '''
+    Args:
+        input_shape: three dimensions in the TensorFlow Data Format
+        num_classes: number of classes
+        include_top: a boolean value, for full traning or finetune 
+    Return: 
+        logits: the logit outputs of the model.
+    '''
+    inputs = Input(shape=input_shape)
+
+    # Make the the stem of Inception v4 
+    x = inception_stem(inputs)
+
+    # 4 x Inception-A blocks: 35 x 35 x 384
+    for i in range(0, 4):
+        x = inception_a(x)
+
+    # Reduction-A block: # 35 x 35 x 384
+    x = reduction_a(x)
+
+    # 7 x Inception-B blocks: 17 x 17 x 1024
+    for i in range(0, 7):
+        x = inception_b(x)
+
+    # Reduction-B block: 17 x 17 x 1024
+    x = reduction_b(x)
+
+    # 3 x Inception-C blocks: 8 x 8 x 1536
+    for i in range(0, 3):
+        x = inception_c(x)
+
+    # Final pooling and prediction
+    if include_top:
+        # 1 x 1 x 1536
+        x = AveragePooling2D((8,8), padding='valid')(x)
+        x = Dropout(0.5)(x)
+        x = Flatten()(x)
+        x = Dense(units=num_classes, activation='softmax')(x)
+
+    model = Model(inputs, x, name='inception_v4')
+
+    return model
+
