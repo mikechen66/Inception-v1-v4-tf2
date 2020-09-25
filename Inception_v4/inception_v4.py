@@ -198,7 +198,7 @@ def inception_v4(input_shape, num_classes, include_top):
     '''
     inputs = Input(shape=input_shape)
 
-    # Call the function of inception_stem() with adopting "x" in the recursion
+    # Call the function with adopting "x" in the classical recursion 
     x = inception_stem(inputs)
 
     # 4 x Inception-A blocks: 35 x 35 x 384
@@ -230,4 +230,3 @@ def inception_v4(input_shape, num_classes, include_top):
     model = Model(inputs, x, name='inception_v4')
 
     return model
-
