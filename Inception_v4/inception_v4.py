@@ -50,7 +50,7 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
-
+# Please note "x" is the 4D tensor used in the classical recurison 
 def conv_bn(x, filters, kernel_size, strides, padding='same', use_bias=False):
     # Define the joint function to apply the combination of Conv and BatchNorm 
     x = Conv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=use_bias,
@@ -198,7 +198,7 @@ def inception_v4(input_shape, num_classes, include_top):
     '''
     inputs = Input(shape=input_shape)
 
-    # Make the the stem of Inception v4 
+    # Call the function of inception_stem() with adopting "x" in the recursion
     x = inception_stem(inputs)
 
     # 4 x Inception-A blocks: 35 x 35 x 384
