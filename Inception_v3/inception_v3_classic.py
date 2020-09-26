@@ -21,7 +21,7 @@ the the command as follows.
 
 $ inception_v3_classic.py
 
-After adding the auxilary layers, The total parameter of the Inception v3 has 31+ million. Please 
+After adding the auxilary layers, the total parameter of the Inception v3 has 25+ million. Please 
 see the paper with opening the weblink as follows. Make the the necessary changes to adapt to the 
 environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 11.0, cuDNN 8.0.1 and CUDA 450.57. In 
 addition, write the new lines of code to replace the deprecated code. For the model summary, the 
