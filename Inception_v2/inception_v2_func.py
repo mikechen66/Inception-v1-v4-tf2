@@ -92,7 +92,7 @@ def googlenet(input_shape, num_classes):
 
 def inception(input, axis, params):
 
-    # Bind the vertical cells tegother for an elegant realization 
+    # Bind the horizontal cells tegother for an elegant realization 
     [branch1, branch2, branch3, branch4] = params
 
     # Layer1-->No.1: Conv 64 1x1 + 1(s)
