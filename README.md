@@ -1,4 +1,4 @@
-# Inception-v1-v4 for TensorFlow 2.x and Keras 2.4.3 
+# Inception-v1-v4 for TF 2.x and Keras 2.4.3 
 
 ## General Introduction 
 
