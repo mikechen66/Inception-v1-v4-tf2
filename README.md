@@ -10,7 +10,7 @@ expression of the image classification.
 
 ## Characteristics 
 
-Make the classical Inception v1~v4 models in TensorFlow 2.2 and Keras 2.4.3. Rebuild the 4 models 
+Address the classical Inception v1~v4 models in TensorFlow 2.2 and Keras 2.4.3. Rebuild the 4 models 
 with the style of linear algebra, including matrix components for both Inception A,B,C and Reduction 
 A,B. In contrast, Inception stem only address addition computation.
 
