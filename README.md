@@ -17,10 +17,15 @@ A,B. In contrast, Inception stem only address addition computation.
 ## Operating Environment
 
 Ununtu 18.04 
+
 TensorFlow 2.2 
+
 Keras 2.4.3
+
 CUDA Toolkit 11.0
+
 cuDNN 8.0.1
+
 CUDA 450.57
 
 ## Others
