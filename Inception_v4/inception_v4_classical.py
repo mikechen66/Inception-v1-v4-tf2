@@ -269,7 +269,7 @@ def inception_v4(input_shape, num_classes, include_top, weights):
 if __name__ == '__main__':
 
     input_shape = (299,299,3)
-    num_classes = 1001
+    num_classes = 1000
     include_top = True 
     weights = None
 
