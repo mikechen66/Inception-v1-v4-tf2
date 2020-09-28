@@ -10,6 +10,15 @@ If the files of Inception_v4_weights are hard to download during the runtime due
 of network connectivity, users can directly download them. There is a note for the download link
 in the file of Inception_v4_predict. 
 
+Inception Weights 
+https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+
+Inception Weights with No Top
+https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
+
+After downloading the weights and adding them into the script, users can run the script with the 
+command as follows. 
+
 $ python inception_v4_no_aux.py
 
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
