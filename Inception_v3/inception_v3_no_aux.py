@@ -4,7 +4,7 @@
 # inception_v3_no_aux.py
 
 """
-Inception V3 model for Keras. 
+Inception v3 model for Keras. 
 
 It is the pure model of Inception v3. Since the Inception creators basically built the model on 
 the linear algebra, incuding matrix components for inception a,b,c and reduction a,b. With regard
@@ -43,6 +43,10 @@ from keras.layers import Input, Conv2D, Dropout, Dense, Flatten, Activation, \
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
+
+
+WEIGHTS_PATH = '/home/mike/keras_dnn_models/inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
+WEIGHTS_PATH_NO_TOP = 'home/mike/keras_dnn_models/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
 
 def conv_bn(x, filters, kernel_size, padding='same', strides=(1,1), name=None):
@@ -168,7 +172,6 @@ def inception_c(input):
 def aux_output(x):
     y = AveragePooling2D(pool_size=(5,5), strides=(3,3), padding='same')(x)
     y = Conv2D(filters=128, kernel_size=(1,1), padding='same', activation='relu')(y)
-    y = Flatten()(y)
     y = Dense(units=1024, activation='relu')(y)
     y = Dropout(0.7)(y)
     y = Dense(units=num_classes, activation='sigmoid')(y)
@@ -213,6 +216,7 @@ def inception_v3(input_shape, num_classes, weights=None, include_top=None):
     for i in range(0, 2):
         x = inception_c(x)
 
+    # It comply with the Inception v3 paper, so it is different from Cholett's snippet. 
     if include_top:
         x = AveragePooling2D((8,8), padding='valid')(x)
         x = Dropout(0.5)(x)
@@ -222,6 +226,16 @@ def inception_v3(input_shape, num_classes, weights=None, include_top=None):
     # Only keep x in the 4D tensor if no auxilary classifier 
     model = Model(inputs, x, name='inception_v3')
     # model = Model(inputs, [x,y], name='inception_v3')
+
+    # load weights
+    if weights == 'imagenet':
+        if include_top:
+            weights_path = WEIGHTS_PATH
+        else:
+            weights_path = WEIGHTS_PATH_NO_TOP
+        # -model.load_weights(weights_path, by_name=True)
+        model.load_weights(weights_path)
+
     return model 
 
 

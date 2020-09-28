@@ -21,7 +21,7 @@ the the command as follows.
 
 $ inception_v3_classic.py
 
-After adding the auxilary layers, the total parameter of the Inception v3 has 25+ million. Please 
+After adding the auxilary layers, The total parameter of the Inception v3 has 31+ million. Please 
 see the paper with opening the weblink as follows. Make the the necessary changes to adapt to the 
 environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 11.0, cuDNN 8.0.1 and CUDA 450.57. In 
 addition, write the new lines of code to replace the deprecated code. For the model summary, the 
@@ -44,6 +44,11 @@ from keras.layers import Input, Conv2D, Dropout, Dense, Flatten, Activation, \
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
+
+
+# Since it add the auxilary classifier, the weights is not suitable to the deeper model. 
+# -WEIGHTS_PATH = '/home/mike/keras_dnn_models/inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
+# -WEIGHTS_PATH_NO_TOP = 'home/mike/keras_dnn_models/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
 
 def conv_bn(x, filters, kernel_size, padding='same', strides=(1,1), name=None):
@@ -169,15 +174,14 @@ def aux_output(x):
 # Define an auxilary classifier 
     y = AveragePooling2D(pool_size=(5,5), strides=(3,3), padding='same')(x)
     y = Conv2D(filters=128, kernel_size=(1,1), padding='same', activation='relu')(y)
-    y = Flatten()(y)
-    y = Dense(units=1024, activation='relu')(y)
-    y = Dropout(0.7)(y)
-    y = Dense(units=num_classes, activation='sigmoid')(y)
+    y = Dense(units=768, activation='relu')(y)
+    y = Dropout(0.5)(y)
+    y = Dense(units=num_classes, activation='softmax', name="aux_pred")(y)
 
     return y
 
 
-def inception_v3(input_shape, num_classes, weights=None, include_top=None):
+def inception_v3(input_shape, num_classes, include_top, weights):
     # Build the abstract Inception v4 network
     """
     Args:
@@ -216,13 +220,22 @@ def inception_v3(input_shape, num_classes, weights=None, include_top=None):
         x = inception_c(x)
 
     if include_top:
-        x = AveragePooling2D((8,8), padding='valid')(x)
+        x = GlobalAveragePooling2D(name='gav_pool')(x)
+        x = Dense(units=2048, activation='relu')(x) 
         x = Dropout(0.5)(x)
-        x = Flatten()(x)
-        x = Dense(units=num_classes, activation='softmax')(x)
+        x = Dense(units=num_classes, activation='softmax', name='main_pred')(x)
 
     # Put x and y (in the 4D tensor) in the list 
     model = Model(inputs, [x,y], name='inception_v3')
+
+    # load weights
+    if weights == 'imagenet':
+        if include_top:
+            weights_path = WEIGHTS_PATH
+        else:
+            weights_path = WEIGHTS_PATH_NO_TOP
+        # -model.load_weights(weights_path, by_name=True)
+        model.load_weights(weights_path)
 
     return model 
 
@@ -232,7 +245,10 @@ if __name__ == '__main__':
     input_shape = (299, 299, 3)
     num_classes = 1000
     include_top=True
+    weights='imagenet'
 
+    # The model is deepter than the non-auxilary model with defaulted weights
+    # -model = inception_v3(input_shape, num_classes, include_top, weights)
     model = inception_v3(input_shape, num_classes, include_top)
 
     model.summary()
