@@ -1,15 +1,20 @@
  #!/usr/bin/env python
 # coding: utf-8
 
-# xception_v1_model.py\
+# xception_v1_model.py
 
 """
-Inception V3 model for Keras. Please make the following command in the Linux Terminal and get 
-the related predicted result. 
+Xception v1  model for Keras. 
+
+Rebuild the Xception v1 model with the function-oriented programming. It addresses the power, elagance 
+and simplicity with the structured functions. Please make the following command in the Linux Terminal 
+and get the related predicted result. 
 
 $ python model_predict.py
 
-Xception V1 model for Keras.
+Please note that the first iteration of conv_a does not include the typical head of activation. So 
+the fucntion of range() is not added into the section. In contrast, the section of conv_b is well 
+structured to address the eight itertations. 
 
 This model is available for TensorFlow only, and can only be used with inputs following the TensorFlow 
 data format `(width, height, channels)`. You have to set `image_data_format="channels_last"` in your 
@@ -78,6 +83,7 @@ def conv_a(input):
     residual = Conv2D(128, (1, 1), strides=(2, 2), padding='same', use_bias=False)(input)
     residual = BatchNormalization()(residual)
     
+    # Exclude the head of activation of 'relu' because it is connected to the above activation. 
     x = SeparableConv2D(128, (3, 3), padding='same', use_bias=False, name='block2_sepconv1')(input)
     x = BatchNormalization(name='block2_sepconv1_bn')(x)
     x = Activation('relu', name='block2_sepconv2_act')(x)
