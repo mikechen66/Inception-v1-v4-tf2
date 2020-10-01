@@ -1,26 +1,38 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# xception_v1_light_pred.py
+
 """
+Xception v1  model for Keras. 
+Rebuild the Xception v1 model with the function-oriented programming. It addresses the power, elagance 
+and simplicity with the structured functions. Please make the following command in the Linux Terminal 
+and get the related predicted result. 
 
-Inception V3 model for Keras. Please make the following command in the Linux Terminal and get 
-the related predicted resulr. 
+$ python xception_v1_light_pred.py
 
-$ python inception_v3_predictg.py
+Please note that the first iteration of conv_a does not include the typical head of activation. So 
+the fucntion of range() is not added into the section. In contrast, the section of conv_b is well 
+structured to address the eight itertations. 
 
-Predicted: [[('n02504458', 'African_elephant', 0.9749893), ('n01871265', 'tusker', 0.016361168),
-('n02504013', 'Indian_elephant', 0.002354787), ('n03633091', 'ladle', 0.000102942366), ('n04596742', 
-'wok', 9.29997e-05)]]
+This model is available for TensorFlow only, and can only be used with inputs following the TensorFlow 
+data format `(width, height, channels)`. You have to set `image_data_format="channels_last"` in your 
+Keras config located at ~/.keras/keras.json. 
 
-Editor: Mike Chen
+On ImageNet, this model gets to a top-1 validation accuracy of 0.790 and a top-5 validation accuracy of 
+0.945. Also do note that this model is only available for the TensorFlow backend, due to its reliance on 
+`SeparableConvolution` layers.
 
 Make the the necessary changes to adapt to the environment of TensorFlow 2.3, Keras 2.4.3, CUDA Toolkit 
-11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to replace the deprecated code. 
-
-
-Author: Francios Chollet -- inception_v3.py 
-Note that the input image format for this model is different than for the VGG16 and ResNet models 
-(299x299 instead of 224x224), and that the input preprocessing function is also different (same as 
-Xception).
-
+11.0, cuDNN 8.0.1 and CUDA 450.57. In addition, write the new lines of code to replace the deprecated 
+code.
+Environment: 
+Ubuntu 18.04 
+TensorFlow 2.3
+Keras 2.4.3
+CUDA Toolkit 11.0, 
+cuDNN 8.0.1
+CUDA 450.57.
 Reference:
 [Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/abs/1610.02357)
 """
@@ -72,6 +84,7 @@ def conv_a(input):
     residual = Conv2D(128, (1, 1), strides=(2, 2), padding='same', use_bias=False)(input)
     residual = BatchNormalization()(residual)
     
+    # Exclude the head of activation of 'relu' because it is connected to the above activation.
     x = SeparableConv2D(128, (3, 3), padding='same', use_bias=False, name='block2_sepconv1')(input)
     x = BatchNormalization(name='block2_sepconv1_bn')(x)
     x = Activation('relu', name='block2_sepconv2_act')(x)
