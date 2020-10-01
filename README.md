@@ -2,11 +2,11 @@
 
 ## General Introduction 
 
-It is an attempt to have the new interpretation of the classical Inception v1~v4 models in the new
-environment. The new interpreted models are used for the thorough study on how the outstanding 
-creators and developers has built the classical network based on the network depth of AlexNet and 
-the small filter size of NIN(Network In Network). It typically stacks the layers for more the complex 
-expression of the image classification. 
+It is an attempt to have the new interpretation of the classical Inception v1~v4 models, Xception
+Inception ResNet v2 in the new environment. The new interpreted models are used for the thorough 
+study on how the outstanding creators and developers has built the classical network based on the 
+network depth of AlexNet and the small filter size of NIN(Network In Network). It typically stacks 
+the layers for more the complex expression of the image classification. 
 
 ## Characteristics 
 
