@@ -102,14 +102,10 @@ def inception(input, axis, params):
 
 if __name__ == "__main__":
 
+    input_shape = (224, 224, 3)
     num_classes = 1000
-    image_width = 224
-    image_height = 224
-    channels = 3
 
     # Assign the values 
-    input_shape = (image_width, image_height, channels)
-
     model = googlenet(input_shape, num_classes)
 
     model.summary()
