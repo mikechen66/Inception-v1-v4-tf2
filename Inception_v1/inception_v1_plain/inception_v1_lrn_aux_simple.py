@@ -18,7 +18,7 @@ the new lines of code to replace the deprecated code.
 
 Thanks for the guys for the contributions. For instance, joelouismarino provided the original script 
 of the model in Theano and swghosh modified the script of lrn.py based on the original scrip of 
-joelouismarino. Mike modifies it  to adatp to TensorFlow 2.2 and Keras 2.4.3
+joelouismarino. Mike modifies it to adatp to TensorFlow 2.2 and Keras 2.4.3
 
 Going Deeper with Convolutions(GoogLeNet Inception v1)
 https://arxiv.org/pdf/1409.4842.pdf
