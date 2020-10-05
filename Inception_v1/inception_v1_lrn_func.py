@@ -12,8 +12,8 @@ complexity of the image classification. Please use the following command to run 
 $ python inception_v1_lrn_func.py
 
 If adding the auxilary classifiers, the Inception v1 has the total size of 9+ million parameters. 
-In contrast, the Inception v1 without auxiliary classifiers has only the 6+ million. It is close
-to the official published total size of parameters. 
+In contrast, the Inception v1 without auxiliary classifiers has only 6+ million. It is close to 
+the official total size of parameters released by the GoogleNet team. 
 
 Environment: 
 
