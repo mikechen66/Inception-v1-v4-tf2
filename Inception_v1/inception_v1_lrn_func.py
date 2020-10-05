@@ -32,9 +32,9 @@ https://arxiv.org/pdf/1409.4842.pdf
 
 import tensorflow as tf 
 from tensorflow.keras.layers import Input, Conv2D, Dense, Dropout, Lambda, MaxPooling2D, AveragePooling2D
-from keras.models import Model
-from keras.layers.merge import concatenate
-from keras.regularizers import l2
+from tensorflow.keras.layers import concatenate
+from tensorflow.keras.models import Model
+from tensorflow.keras.regularizers import l2
 
 
 # Set up the GPU to avoid the runtime error: Could not create cuDNN handle...
@@ -68,8 +68,8 @@ def googlenet(input_shape, num_classes):
                        kernel_regularizer=l2(0.01))(input)
     maxpool1_3x3 = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same')(conv1_7x7)
     pool1_norm1 = LRN()(maxpool1_3x3)
-    conv2_1x1 = Conv2D(filters=64, kernel_size=(1,1),  strides=(1,1), padding='same', activation='relu', 
-                              kernel_regularizer=l2(0.01))(pool1_norm1)
+    conv2_1x1 = Conv2D(filters=64, kernel_size=(1,1),  strides=(1,1), padding='valid', activation='relu', 
+                       kernel_regularizer=l2(0.01))(pool1_norm1)
     conv2_3x3 = Conv2D(filters=192, kernel_size=(3,3), strides=(1,1), padding='same', activation='relu', 
                        kernel_regularizer=l2(0.01))(conv2_1x1)
     conv2_norm2 = LRN()(conv2_3x3)
@@ -104,23 +104,23 @@ def inception(input, axis, params):
     [branch1, branch2, branch3, branch4] = params
 
     conv_11 = Conv2D(filters=branch1[0], kernel_size=(1,1), padding='same', activation='relu', 
-                         kernel_regularizer=l2(0.01))(input)
+                     kernel_regularizer=l2(0.01))(input)
 
     conv_12 = Conv2D(filters=branch2[0], kernel_size=(1,1), padding='same', activation='relu', 
-                                kernel_regularizer=l2(0.01))(input)
+                     kernel_regularizer=l2(0.01))(input)
     conv_22 = Conv2D(filters=branch2[1], kernel_size=(3,3), padding='same', activation='relu', 
-                         kernel_regularizer=l2(0.01))(conv_12)
+                     kernel_regularizer=l2(0.01))(conv_12)
 
     conv_13 = Conv2D(filters=branch3[0], kernel_size=(1,1), padding='same', activation='relu', 
-                                kernel_regularizer=l2(0.01))(input)
+                     kernel_regularizer=l2(0.01))(input)
     conv_23 = Conv2D(filters=branch3[1], kernel_size=(5,5), padding='same', activation='relu', 
-                         kernel_regularizer=l2(0.01))(conv_13)
+                     kernel_regularizer=l2(0.01))(conv_13)
 
     maxpool_14 = MaxPooling2D(pool_size=(3,3), strides=(1,1), padding='same')(input)
     maxpool_proj_24 = Conv2D(filters=branch4[0], kernel_size=(1,1), strides=(1,1), padding='same', 
                              activation='relu', kernel_regularizer=l2(0.01))(maxpool_14)
 
-    inception_output = concatenate([conv_11, conv_22, conv_23, maxpool_proj_24], axis=3)  # use tf as backend
+    inception_output = concatenate([conv_11, conv_22, conv_23, maxpool_proj_24], axis=3)  
 
     return inception_output
 
