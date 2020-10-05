@@ -57,7 +57,7 @@ class Googlenet(object):
  
         conv1_7x7 = Conv2D(64, (7,7), strides=(2,2), padding='same', activation='relu', name='conv1/7x7_s2')(input)
         pool1_3x3 = MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='same', name='pool1/3x3_s2')(conv1_7x7)
-        pool1_norm1 = LRN(name='pool1/norm1')( pool1_3x3)
+        pool1_norm1 = LRN(name='pool1/norm1')(pool1_3x3)
         conv2_3x3_reduce = Conv2D(64, (1,1), padding='valid', activation='relu', name='conv2/3x3_reduce')(pool1_norm1)
         conv2_3x3 = Conv2D(192, (3,3), padding='same', activation='relu', name='conv2/3x3')(conv2_3x3_reduce)
         conv2_norm2 = LRN(name='conv2/norm2')(conv2_3x3)
