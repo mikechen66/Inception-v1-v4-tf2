@@ -195,7 +195,7 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
     x = layers.concatenate([branch1x1, branch5x5, branch3x3dbl, branch_pool], 
                            axis=channel_axis, name='mixed0')
 
-    # Mixed 1: 35 x 35 x 288
+    # Mixed 1: 35 x 35 x 256
     branch1x1 = conv2d_bn(x, 64, 1, 1)
 
     branch5x5 = conv2d_bn(x, 48, 1, 1)
@@ -210,7 +210,7 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
     x = layers.concatenate([branch1x1, branch5x5, branch3x3dbl, branch_pool], 
                             axis=channel_axis,name='mixed1')
 
-    # Mixed 2: 35 x 35 x 288
+    # Mixed 2: 35 x 35 x 256
     branch1x1 = conv2d_bn(x, 64, 1, 1)
 
     branch5x5 = conv2d_bn(x, 48, 1, 1)
@@ -366,13 +366,6 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
             convert_all_kernels_in_model(model)
             
     return model
-
-
-def preprocess_input(x):
-    x = np.divide(x, 255.0)
-    x = np.subtract(x, 0.5)
-    x = np.multiply(x, 2.0)
-    return x
 
 """
 if __name__ == '__main__':
