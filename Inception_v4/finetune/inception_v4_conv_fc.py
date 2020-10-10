@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# inception_v4_cbase.py
+# inception_v4_conv_fc.py
 
 """
 Inception V4 model for Keras. 
