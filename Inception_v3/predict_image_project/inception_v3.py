@@ -180,7 +180,7 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
     x = conv2d_bn(x, 192, 3, 3, padding='valid')
     x = MaxPooling2D((3, 3), strides=(2, 2))(x)
 
-    # Mixed 0, 1, 2: 35 x 35 x 256
+    # Mixed 0: 35 x 35 x 256
     branch1x1 = conv2d_bn(x, 64, 1, 1)
 
     branch5x5 = conv2d_bn(x, 48, 1, 1)
@@ -195,7 +195,7 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
     x = layers.concatenate([branch1x1, branch5x5, branch3x3dbl, branch_pool], 
                            axis=channel_axis, name='mixed0')
 
-    # Mixed 1: 35 x 35 x 256
+    # Mixed 1: 35 x 35 x 288
     branch1x1 = conv2d_bn(x, 64, 1, 1)
 
     branch5x5 = conv2d_bn(x, 48, 1, 1)
@@ -210,7 +210,7 @@ def Inception_V3(include_top=True, weights='imagenet', input_tensor=None,
     x = layers.concatenate([branch1x1, branch5x5, branch3x3dbl, branch_pool], 
                             axis=channel_axis,name='mixed1')
 
-    # Mixed 2: 35 x 35 x 256
+    # Mixed 2: 35 x 35 x 288
     branch1x1 = conv2d_bn(x, 64, 1, 1)
 
     branch5x5 = conv2d_bn(x, 48, 1, 1)
