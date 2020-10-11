@@ -20,8 +20,11 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
 tf.config.experimental.set_memory_growth(gpu, True)
 
-Since we use binary_crossentropy loss, we need binary labels. It is worth noting that the 
-argument of lr=le-4 could not improve the accuracy in the function of model.compile().  
+It is worth noting the finetune could not achive higher accruacy rbecuase its adoption a small 
+databset of 4000 images. If users adopt the larger dataset such as the original cats_vs_dogs, 
+it woule have a higher accuracy. Since we use binary_crossentropy loss, we need binary labels. 
+It is worth noting that the argument of lr=le-4 could not improve the accuracy in the function 
+of model.compile().  
 
 optimizer=optimizers.RMSprop(lr=1e-5)
 """
@@ -38,6 +41,7 @@ from keras.layers import Dense, Flatten, AveragePooling2D
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from inception_v4_conv_fc import inception_v4
+from numba import cuda
 
 
 # Set up the GPU memory size to avoid the out-of-memory error
@@ -216,7 +220,5 @@ test_loss, test_acc = model.evaluate_generator(test_generator, steps=50)
 print('test acc:', test_acc)
 
 # Release the GPU Memory
-from numba import cuda
-
 cuda.select_device(0)
 cuda.close()
