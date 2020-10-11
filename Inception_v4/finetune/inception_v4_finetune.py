@@ -4,10 +4,11 @@
 # inception_v4_finetune.py
 
 """
-The script predicts both the class and the certainty for any designated image. Since the 
-prediction-related function is a customized relaization. It is quire different from the 
-decode_predictions() within keras. However, the latter only accepts 1000 classes not 1001 
-that is defaulted in the Inception V4 Weights. Please give the commands as follows. 
+Finetuning consists of unfreezing a few of the top layers of a frozen model base used for 
+feature extraction, and joint training both the newly added part of the model, the fully 
+connected classifier and the top layers. This is called finetuning because it slightly 
+adjusts the more abstract representations of the model being reused in order to make them 
+more relevant for the problem at hand.
 
 $ python inception_v4_finetune.py
 
@@ -19,20 +20,15 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
 tf.config.experimental.set_memory_growth(gpu, True)
 
-
 Since we use binary_crossentropy loss, we need binary labels. It is worth noting that the 
 argument of lr=le-4 could not improve the accuracy in the function of model.compile().  
 
 optimizer=optimizers.RMSprop(lr=1e-5)
-
-Uses can change the combination of formal arguments in order to call the back-end model. 
-It is useful to fintune the model to realize specific purposes. 
 """
-
-load_ext tensorboard
 
 
 import os 
+import datetime
 import numpy as np
 import tensorflow as tf 
 import matplotlib.pyplot as plt
@@ -44,7 +40,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from inception_v4_conv_fc import inception_v4
 
 
-# Set up the GPU to avoid the runtime error: Could not create cuDNN handle...
+# Set up the GPU memory size to avoid the out-of-memory error
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
   # Restrict TensorFlow to only allocate 4GB of memory on the first GPU
@@ -60,10 +56,11 @@ if gpus:
 
 
 # Give the directory for train, validation and test sets. 
-base_dir = '/home/mic/Documents/keras_inception_v4/cats_and_dogs_small'
+base_dir = '/home/mike/Documents/keras_inception_v4/cats_and_dogs_small'
 train_dir = os.path.join(base_dir, 'train')
 validation_dir = os.path.join(base_dir, 'validation')
 test_dir = os.path.join(base_dir, 'test')
+
 
 # Give the arguments for the conv_base
 input_shape = (299,299,3)
@@ -83,18 +80,19 @@ model.add(layers.Dense(units=2, activation='softmax'))
 model.summary()
 
 
-# Finetune the last fully connected layers(the inception_c block)
-conv_base.trainable = True
-set_trainable = False
-for layer in conv_base.layers:
-    if layer.name == 'inception_c':
-        set_trainable = True
-    if set_trainable:
-        layer.trainable = True
-    else:
-        layer.trainable = False
+print('This is the number of trainable weights '
+      'before freezing the conv base:', len(model.trainable_weights))
 
-# Train the given datasets 
+
+# Free the conv_base before the training 
+conv_base.trainable = False
+
+
+print('This is the number of trainable weights '
+      'after freezing the conv base:', len(model.trainable_weights))
+
+
+# Train the given datasets with data generator
 train_datagen = ImageDataGenerator(
       rescale=1./255,
       rotation_range=40,
@@ -110,35 +108,54 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
         train_dir,
-        target_size=(299, 299),
+        target_size=(299,299),
         batch_size=20,
         class_mode='binary')
 
 validation_generator = test_datagen.flow_from_directory(
         validation_dir,
-        target_size=(299, 299),
+        target_size=(299,299),
         batch_size=20,
         class_mode='binary')
 
 
+# Finetune the last fully connected layers(the inception_c block)
+conv_base.trainable = True
+set_trainable = False
+for layer in conv_base.layers:
+    if layer.name == 'inception_c':
+        set_trainable = True
+    if set_trainable:
+        layer.trainable = True
+    else:
+        layer.trainable = False
+
+
+# Compile the model 
 model.compile(loss='binary_crossentropy',
               optimizer=optimizers.RMSprop(lr=1e-5),
               metrics=['acc'])
 
-log_dir=os.path.join("logs","fit", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
+# Start Tensorboard --logdir logs/fit
+log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+callback_list = [tensorboard_callback]
+
+# Train the fintuned model 
 history = model.fit(train_generator,
                     steps_per_epoch=100,
-                    epochs=100,
+                    epochs=30,
                     validation_data=validation_generator,
-                    validation_steps=50)
+                    validation_steps=50,
+                    callbacks=callback_list)
 
-tensorboard --logdir logs/fit
+# Show the tensorboard in the Linux terminal 
+# -tensorboard --logdir logs/fit
 
 model.save('inception_v4_weights_tf_cats_and_dogs_small.h5')
 
-# Draw the curves 
+# Draw the general curves 
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
@@ -162,7 +179,7 @@ plt.show()
 
 
 def smooth_curve(points, factor=0.8):
-    # Define the smooth_curve function  
+    # Define the smooth curve function  
     smoothed_points = []
     for point in points:
         if smoothed_points:
@@ -197,3 +214,9 @@ test_generator = test_datagen.flow_from_directory(
 
 test_loss, test_acc = model.evaluate_generator(test_generator, steps=50)
 print('test acc:', test_acc)
+
+# Release the GPU Memory
+from numba import cuda
+
+cuda.select_device(0)
+cuda.close()
