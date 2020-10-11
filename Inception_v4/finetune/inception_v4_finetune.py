@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python
+# coding: utf-8
 
 # inception_v4_finetune.py
 
@@ -10,121 +11,189 @@ that is defaulted in the Inception V4 Weights. Please give the commands as follo
 
 $ python inception_v4_finetune.py
 
-Class is: African elephant, Loxodonta africana
-Certainty is: 0.8177135
-
-Uses can change the combination of formal arguments in order to call the back-end model. 
-It is useful to fintune the model to realize specific purposes. 
-
-"""
-
-from keras.layers import Input, Conv2D, Dropout, Dense, Flatten, AveragePooling2D
-from keras.preprocessing import image
-# -from keras.applications.imagenet_utils import decode_predictions
-from keras.models import Model
-import tensorflow as tf 
-import numpy as np
-from inception_v4_convbase import inception_stem, inception_a, inception_b, \
-    inception_c, reduction_a, reduction_b
-
+We set the GPU as 4096 MiB to avoid the runtime error on RTX 2070 Super 2070. If users has 
+a big GPU, users can optionally choose the following setting. 
 
 # Set up the GPU to avoid the runtime error: Could not create cuDNN handle...
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
+tf.config.experimental.set_memory_growth(gpu, True)
 
 
-# Assume users have already downloaded the Inception v4 weights 
-WEIGHTS_PATH = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
-WEIGHTS_PATH_NO_TOP = '/home/mike/keras_dnn_models/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
+Since we use binary_crossentropy loss, we need binary labels. It is worth noting that the 
+argument of lr=le-4 could not improve the accuracy in the function of model.compile().  
+
+optimizer=optimizers.RMSprop(lr=1e-5)
+
+Uses can change the combination of formal arguments in order to call the back-end model. 
+It is useful to fintune the model to realize specific purposes. 
+"""
+
+load_ext tensorboard
 
 
-def inception_v4(input_shape, num_classes, weights, include_top):
-    # Build the abstract Inception v4 network
-    '''
-    Args:
-        input_shape: three dimensions in the TensorFlow Data Format
-        num_classes: number of classes
-        weights: pre-defined Inception v4 weights 
-        include_top: a boolean, for full traning or finetune 
-    Return: 
-        logits: the logit outputs of the model.
-    '''
-    inputs = Input(shape=input_shape)
+import os 
+import numpy as np
+import tensorflow as tf 
+import matplotlib.pyplot as plt
 
-    # Make the the stem of Inception v4 
-    x = inception_stem(inputs)
+from keras import models, layers, optimizers
+from keras.layers import Dense, Flatten, AveragePooling2D
+from keras.preprocessing import image
+from keras.preprocessing.image import ImageDataGenerator
+from inception_v4_conv_fc import inception_v4
 
-    # 4 x Inception-A blocks: 35 x 35 x 384
-    for i in range(0, 4):
-        x = inception_a(x)
 
-    # Reduction-A block: # 35 x 35 x 384
-    x = reduction_a(x)
+# Set up the GPU to avoid the runtime error: Could not create cuDNN handle...
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  # Restrict TensorFlow to only allocate 4GB of memory on the first GPU
+  try:
+    tf.config.experimental.set_virtual_device_configuration(
+        gpus[0],
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Virtual devices must be set before GPUs have been initialized
+    print(e)
 
-    # 7 x Inception-B blocks: 17 x 17 x 1024
-    for i in range(0, 7):
-        x = inception_b(x)
 
-    # Reduction-B block: 17 x 17 x 1024
-    x = reduction_b(x)
+# Give the directory for train, validation and test sets. 
+base_dir = '/home/mic/Documents/keras_inception_v4/cats_and_dogs_small'
+train_dir = os.path.join(base_dir, 'train')
+validation_dir = os.path.join(base_dir, 'validation')
+test_dir = os.path.join(base_dir, 'test')
 
-    # 3 x Inception-C blocks: 8 x 8 x 1536
-    for i in range(0, 3):
-        x = inception_c(x)
+# Give the arguments for the conv_base
+input_shape = (299,299,3)
+num_classes = 1001
+weights='imagenet'
+include_top = None 
 
-    # Final pooling and prediction
-    if include_top:
-        # 1 x 1 x 1536
-        x = AveragePooling2D((8,8), padding='valid')(x)
-        x = Dropout(0.5)(x)
-        x = Flatten()(x)
-        x = Dense(units=num_classes, activation='softmax')(x)
+conv_base = inception_v4(input_shape, num_classes, weights, include_top)
+conv_base.summary()
 
-    model = Model(inputs, x, name='inception_v4')
+model = models.Sequential()
+model.add(conv_base)
+model.add(layers.GlobalAveragePooling2D(name='avg_pool'))
+model.add(layers.Dropout(0.6))
+model.add(layers.Flatten())
+model.add(layers.Dense(units=2, activation='softmax'))
+model.summary()
 
-    # load weights
-    if weights == 'imagenet':
-        if include_top:
-            weights_path = WEIGHTS_PATH
+
+# Finetune the last fully connected layers(the inception_c block)
+conv_base.trainable = True
+set_trainable = False
+for layer in conv_base.layers:
+    if layer.name == 'inception_c':
+        set_trainable = True
+    if set_trainable:
+        layer.trainable = True
+    else:
+        layer.trainable = False
+
+# Train the given datasets 
+train_datagen = ImageDataGenerator(
+      rescale=1./255,
+      rotation_range=40,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
+      shear_range=0.2,
+      zoom_range=0.2,
+      horizontal_flip=True,
+      fill_mode='nearest')
+
+# Note the validation data should not be augmented!
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(299, 299),
+        batch_size=20,
+        class_mode='binary')
+
+validation_generator = test_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(299, 299),
+        batch_size=20,
+        class_mode='binary')
+
+
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.RMSprop(lr=1e-5),
+              metrics=['acc'])
+
+log_dir=os.path.join("logs","fit", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+history = model.fit(train_generator,
+                    steps_per_epoch=100,
+                    epochs=100,
+                    validation_data=validation_generator,
+                    validation_steps=50)
+
+tensorboard --logdir logs/fit
+
+model.save('inception_v4_weights_tf_cats_and_dogs_small.h5')
+
+# Draw the curves 
+acc = history.history['acc']
+val_acc = history.history['val_acc']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+
+
+def smooth_curve(points, factor=0.8):
+    # Define the smooth_curve function  
+    smoothed_points = []
+    for point in points:
+        if smoothed_points:
+            previous = smoothed_points[-1]
+            smoothed_points.append(previous * factor + point * (1 - factor))
         else:
-            weights_path = WEIGHTS_PATH_NO_TOP
-        # -model.load_weights(weights_path, by_name=True)
-        model.load_weights(weights_path)
+            smoothed_points.append(point)
+    return smoothed_points
 
-    return model
+# Plot the smoothed curve 
+plt.plot(epochs, smooth_curve(acc), 'bo', label='Smoothed training acc')
+plt.plot(epochs, smooth_curve(val_acc), 'b', label='Smoothed validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, smooth_curve(loss), 'bo', label='Smoothed training loss')
+plt.plot(epochs, smooth_curve(val_loss), 'b', label='Smoothed validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
 
 
-def preprocess_input(x):
-    
-    x = image.img_to_array(x)
-    x = np.expand_dims(x, axis=0)
-    x = np.divide(x, 255.0)
-    x = np.subtract(x, 0.5)
-    output = np.multiply(x, 2.0)
+# Evaluate the fine-tuned model on the test data
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(299, 299),
+        batch_size=20,
+        class_mode='binary')
 
-    return output
-
-
-if __name__ == '__main__':
-
-    input_shape = (299,299,3)
-    num_classes = 1001
-    weights='imagenet'
-    include_top = True 
-
-    model = inception_v4(input_shape, num_classes, weights, include_top)
-
-    model.summary()
-
-    img_path = '/home/mike/Documents/keras_inception_v4/elephant.jpg'
-    img = image.load_img(img_path, target_size=(299,299))
-    output = preprocess_input(img)
-
-    # Open the class label dictionary(that is a human readable label-given ID)
-    classes = eval(open('/home/mike/Documents/keras_inception_v4/validation_utils/class_names.txt', 'r').read())
-
-    # Run the prediction on the given image
-    preds = model.predict(output)
-    print("Class is: " + classes[np.argmax(preds)-1])
-    print("Certainty is: " + str(preds[0][np.argmax(preds)]))
+test_loss, test_acc = model.evaluate_generator(test_generator, steps=50)
+print('test acc:', test_acc)
