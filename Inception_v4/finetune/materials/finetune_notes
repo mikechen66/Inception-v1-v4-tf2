@@ -1,0 +1,3 @@
+Finetiune Notes:
+
+We finetune the Inception v4 with the layers of the inception_c after adding a self-defined classifier. It is as similiar to the finetune of vgg16 model. For instance, vgg16 finetunes the last 3 convolutional layers, which means that all layers up until block4_pool should be frozen, and the layers block5_conv1, block5_conv2 and block5_conv3 should be trainable.
