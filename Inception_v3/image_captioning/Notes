@@ -1,0 +1,24 @@
+Notes:
+
+The model architecture is similar to Show, Attend and Tell: Neural Image Caption 
+Generation with Visual Attention.
+
+In this example, you will train a model on a relatively small amount of data—the 
+first 30,000 captions for about 20,000 images (because there are multiple captions 
+per image in the dataset).
+
+1. Download and prepare the MS-COCO dataset
+
+You will use the MS-COCO dataset to train our model. The dataset contains over 
+82,000 images, each of which has at least 5 different caption annotations. The 
+code below downloads and extracts the dataset automatically.If your internet
+connection is slow, please download the datasets to your current directory. 
+
+2. Inception v3
+
+This notebook is an end-to-end example. While running the notebook during the 
+runtime, it automatically  downloads the MS-COCO dataset, preprocesses and 
+caches a subset of images using Inception V3, trains an encoder-decoder model, 
+and generates captions on new images using the trained model. 
+
+

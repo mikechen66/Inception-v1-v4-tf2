@@ -1,0 +1,13 @@
+coco_dataset_download
+
+Script Nmae: image_captioning.ipynb
+
+Please note he datasets have the size of 14 GiB Please download the dataset 
+if your internet connection speed is slow. Otherwise, you can download the 
+datasets during the runtime. 
+
+annotations_trainval2014(253 Mib)
+http://images.cocodataset.org/annotations/annotations_trainval2014.zip
+
+coco train2014(13.5GiB)
+http://images.cocodataset.org/zips/train2014.zip
