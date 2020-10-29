@@ -1,0 +1,29 @@
+
+Dataset downloading and processing 
+
+1.Downloading the dataset of furniture (243.8MB)
+
+Please have a look at the furniture datasets at Kaggle. 
+
+https://www.kaggle.com/akkithetechie/furniture-detector
+
+Please note that the unzipped file inlcude two files including 
+furniture-images and img. Please opn the file of img and change 
+the subdiaiary file of train to furniture_pictures. And then 
+split the furniture_pictures into train, val and test set. 
+
+2.Processing the data
+
+Process use the following script dataset into the three sets 
+including train, val and test with the give ratio such as 
+8:1:1 or any ratio that you want. 
+
+# Install the data-splitting library
+$ pip install split-folders
+
+# Run the script for splitting the dataset 
+$ split_folders.py
+
+
+
+
