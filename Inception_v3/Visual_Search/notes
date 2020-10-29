@@ -1,0 +1,40 @@
+Notes:
+
+Please follow the guide to execute the script. Some information is 
+given in the data downloading and preprocessing. 
+
+# Downloading the dataset of furniture (243.8MB)
+
+Please have a look at the furniture datasets at Kaggle. 
+
+https://www.kaggle.com/akkithetechie/furniture-detector
+
+
+# Processing the data
+
+Process use the following script dataset into the three sets including 
+train, val and test with the give ratio such as 8:1:1 or any ratio that 
+you want. 
+
+## Install the data-splitting library
+$ pip install split-folders
+
+## Run the script for splitting the dataset 
+$ split_folders.py
+
+
+# tf.data
+
+The class of tf.data is dedicated to build TensorFlow input pipelines 
+randomly. For tf.data, please take the following weblink for reference.
+
+https://www.tensorflow.org/guide/data
+
+
+# Script and Modifications 
+It is based on the scripts provided by Krishnendu. I would like to thank 
+him for his contribution. Make the necessary changes to make the script 
+run successfully and adapt to the environment of CUDA Toolkit 11.0, cuDNN 
+8.0.1 and CUDA 450.57.
+
+
