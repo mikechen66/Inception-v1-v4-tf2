@@ -18,7 +18,7 @@ A,B. In contrast, Inception stem only addresses addition computation.
 
 Ununtu 18.04 
 
-TensorFlow 2.2 
+TensorFlow 2.3 
 
 Keras 2.4.3
 
